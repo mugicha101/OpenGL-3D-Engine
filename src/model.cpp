@@ -7,7 +7,11 @@ namespace model {
     int tick = 0;
 
     void tick_step() {
-        if (input::escape.pressed()) exit_requested = true;
+        // handle exit request
+        if (input::escape.pressed()) {
+            exit_requested = true;
+            return;
+        }
 
         // update tick at end
         ++tick;
