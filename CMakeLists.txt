@@ -20,8 +20,14 @@ FetchContent_Declare(
 set(GLAD_PROFILE "core"	CACHE STRING "OpenGL profile")
 set(GLAD_GENERATOR "c"	CACHE STRING "Language to generate the binding for")
 
+FetchContent_Declare(
+    GLM
+    GIT_REPOSITORY https://github.com/g-truc/glm.git
+    GIT_TAG 1.0.0
+)
 
-FetchContent_MakeAvailable(GLFW GLAD)
+
+FetchContent_MakeAvailable(GLFW GLAD GLM)
 
 file(GLOB src CONFIGURE_DEPENDS "src/main.cpp src/*.h" "src/*.cpp")
 set(GCC_COVERAGE_COMPILE_FLAGS  "-lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl")
