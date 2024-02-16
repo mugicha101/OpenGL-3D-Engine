@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
-project(CMakeProject LANGUAGES C)
-set (CMAKE_C_STANDARD 17)
+project(CMakeProject LANGUAGES CXX)
+set (CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
@@ -23,7 +23,7 @@ set(GLAD_GENERATOR "c"	CACHE STRING "Language to generate the binding for")
 
 FetchContent_MakeAvailable(GLFW GLAD)
 
-file(GLOB src CONFIGURE_DEPENDS "src/main.c src/*.h" "src/*.c")
+file(GLOB src CONFIGURE_DEPENDS "src/main.cpp src/*.h" "src/*.cpp")
 set(GCC_COVERAGE_COMPILE_FLAGS  "-lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl")
 add_executable(CMakeProject ${src})
 target_link_libraries(CMakeProject PRIVATE glfw glad)
