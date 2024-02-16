@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <iostream>
 
+#include "controller.h"
 
 int window_width = 0;
 int window_height = 0;
@@ -44,10 +45,7 @@ int main(int argc, char *argv[]) {
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // main loop
-    while (!glfwWindowShouldClose(window)) {
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
+    main_loop(window);
 
     // cleanup
     glfwTerminate();
