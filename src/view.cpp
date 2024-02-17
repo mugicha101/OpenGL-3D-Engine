@@ -7,6 +7,7 @@
 namespace view {
     unsigned int test_shader_program;
     unsigned int test_vao;
+    unsigned int test_ebo;
 
     // loads shader from file and returns shader object
     unsigned int load_shader_from_file(const char *path, GLenum shader_type) {
@@ -64,20 +65,32 @@ namespace view {
         glDeleteShader(vert_shader);
         glDeleteShader(frag_shader);
 
-        // create test vao
+        // create test polygon
         float vertices[] = {
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.0f,  0.5f, 0.0f
+            0.5f,  0.5f, 0.0f,  // top right
+            0.5f, -0.5f, 0.0f,  // bottom right
+            -0.5f, -0.5f, 0.0f,  // bottom left
+            -0.5f,  0.5f, 0.0f   // top left 
         };
+        unsigned int indices[] = {  // note that we start from 0!
+            0, 1, 3,   // first triangle
+            1, 2, 3    // second triangle
+        };  
         unsigned int test_vbo;
         glGenBuffers(1, &test_vbo);
+
         glGenVertexArrays(1, &test_vao);
         glBindVertexArray(test_vao);
         glBindBuffer(GL_ARRAY_BUFFER, test_vbo);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+        glGenBuffers(1, &test_ebo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, test_ebo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
         glEnableVertexAttribArray(0);
+        glBindVertexArray(0);
     }
 
     void render(GLFWwindow *window) {
@@ -91,10 +104,11 @@ namespace view {
         glClearColor(0.f, 0.f, 0.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // draw test vao
+        // draw test poly
         glPolygonMode(GL_FRONT_AND_BACK, model::debug ? GL_LINE : GL_FILL);
         glUseProgram(test_shader_program);
         glBindVertexArray(test_vao);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, test_ebo);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     }
 }
