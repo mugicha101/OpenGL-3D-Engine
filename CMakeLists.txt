@@ -33,7 +33,7 @@ file(GLOB src CONFIGURE_DEPENDS "src/main.cpp src/*.h" "src/*.cpp")
 set(GCC_COVERAGE_COMPILE_FLAGS  "-lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl")
 add_executable(CMakeProject ${src})
 target_link_libraries(CMakeProject PRIVATE glfw glad)
-# target_compile_features(CMakeProject PRIVATE cxx_std_17)
+target_compile_features(CMakeProject PRIVATE cxx_std_17)
 add_compile_definitions(_USE_MATH_DEFINES)
 
 add_custom_command(
