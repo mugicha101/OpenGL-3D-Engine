@@ -8,5 +8,6 @@
 #include "model.h"
 
 namespace view {
+    void init(GLFWwindow *window);
     void render(GLFWwindow *window);
 }

@@ -10,6 +10,7 @@
 void main_loop(GLFWwindow *window) {
     uint64_t next_frame = 0;
     uint64_t curr_time;
+    view::init(window);
     while (!glfwWindowShouldClose(window)) {
         // handle input
         input::update(window);
