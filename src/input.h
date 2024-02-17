@@ -22,6 +22,7 @@ namespace input {
     extern InputState right;
     extern InputState up;
     extern InputState down;
+    extern InputState debug;
 
     void update(GLFWwindow *window);
 }

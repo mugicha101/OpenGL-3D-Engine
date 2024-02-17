@@ -92,6 +92,7 @@ namespace view {
         glClear(GL_COLOR_BUFFER_BIT);
 
         // draw test vao
+        glPolygonMode(GL_FRONT_AND_BACK, model::debug ? GL_LINE : GL_FILL);
         glUseProgram(test_shader_program);
         glBindVertexArray(test_vao);
         glDrawArrays(GL_TRIANGLES, 0, 3);

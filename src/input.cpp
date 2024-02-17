@@ -7,6 +7,7 @@ namespace input {
     InputState right;
     InputState up;
     InputState down;
+    InputState debug;
 
     void InputState::update_state(bool new_state) {
         fresh = state != new_state;
@@ -35,5 +36,6 @@ namespace input {
         left.update_state(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS);
         down.update_state(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS);
         right.update_state(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS);
+        debug.update_state(glfwGetKey(window, GLFW_KEY_F3) == GLFW_PRESS);
     }
 }
