@@ -40,6 +40,12 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
+    // check that GPU has enough vertex attributes
+    if (GL_MAX_VERTEX_ATTRIBS < 16) {
+        std::cout << "GPU needs to support at least 16 vertex attributes" << std::endl;
+        return -1;
+    }
+
     // setup viewport
     glViewport(0, 0, window_width, window_height);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);

@@ -4,6 +4,12 @@
 #include <cstdlib>
 #include <sstream>
 
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 namespace view {
     unsigned int test_shader_program;
     unsigned int test_vao;
@@ -67,10 +73,10 @@ namespace view {
 
         // create test polygon
         float vertices[] = {
-            0.5f,  0.5f, 0.0f,  // top right
-            0.5f, -0.5f, 0.0f,  // bottom right
-            -0.5f, -0.5f, 0.0f,  // bottom left
-            -0.5f,  0.5f, 0.0f   // top left 
+            1.0f,  0.5f, 0.0f,  // top right
+            1.0f, -0.5f, 0.0f,  // bottom right
+            -1.0f, -0.5f, 0.0f,  // bottom left
+            -1.0f,  0.5f, 0.0f   // top left 
         };
         unsigned int indices[] = {  // note that we start from 0!
             0, 1, 3,   // first triangle
@@ -103,6 +109,14 @@ namespace view {
         // clear screen
         glClearColor(0.f, 0.f, 0.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        // transform scene graph points to world space
+
+        // transform world space to view space
+
+        // transform view space to projection space
+
+        // transform projection space to normalized device coordinates
 
         // draw test poly
         glPolygonMode(GL_FRONT_AND_BACK, model::debug ? GL_LINE : GL_FILL);
