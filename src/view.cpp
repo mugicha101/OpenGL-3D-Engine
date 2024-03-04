@@ -1,5 +1,7 @@
 #include "view.h"
 #include "shader.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -15,20 +17,24 @@ namespace view {
     Shader shader;
     unsigned int test_vao;
     unsigned int test_ebo;
+    unsigned int test_tex;
 
     void init(GLFWwindow *window) {
         shader = Shader("resources/test_vert_shader.glsl", "resources/test_frag_shader.glsl");
 
         // create test polygon
         float vertices[] = {
-            // positions         // colors
-            0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
-            -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
-            0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top 
+            // positions          // colors           // texture coords
+            0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+            0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+            -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+            -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
         };
-        unsigned int indices[] = {  // note that we start from 0
-            0, 1, 2,   // first triangle
+        unsigned int indices[] = {  
+            0, 1, 3, // first triangle
+            1, 2, 3  // second triangle
         };
+
         unsigned int test_vbo;
         glGenBuffers(1, &test_vbo);
 
@@ -42,12 +48,37 @@ namespace view {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
         // attribute 0: pos
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
         glEnableVertexAttribArray(0);
 
         // attribute 1: color
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
+
+        // attribute 2: tex coord
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
+        glEnableVertexAttribArray(2);
+
+        // generate texture
+        glGenTextures(1, &test_tex);
+        glBindTexture(GL_TEXTURE_2D, test_tex);
+        float border_color[] = { 0.f, 0.f, 0.f, 0.f };
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border_color);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        int width, height, nrChannels;
+        stbi_set_flip_vertically_on_load(true);
+        unsigned char *data = stbi_load("resources/reimu_fumo.jpg", &width, &height, &nrChannels, 0);
+        if (!data) {
+            std::cout << "could not load texture source file" << std::endl;
+            exit(-1);
+        }
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        stbi_image_free(data);
 
         glBindVertexArray(0);
     }
@@ -73,6 +104,7 @@ namespace view {
 
         // draw test poly
         glPolygonMode(GL_FRONT_AND_BACK, model::debug ? GL_LINE : GL_FILL);
+        glBindTexture(GL_TEXTURE_2D, test_tex);
         shader.use();
         glBindVertexArray(test_vao);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, test_ebo);
